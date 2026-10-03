@@ -11,26 +11,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup MSVC developer environment
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Setup Lua
         uses: luarocks/gh-actions-lua@v10
         with:
-          luaVersion: "5.4" # При необходимости укажите вашу версию: 5.1, 5.3, 5.4 или luajit
+          luaVersion: "5.4" # Укажите версию под вашу систему: 5.1, 5.2, 5.3, 5.4
 
       - name: Setup LuaRocks
         uses: luarocks/gh-actions-luarocks@v5
 
-      - name: Setup MSYS2 (GCC & ZLIB)
+      - name: Setup MSYS2 and ZLIB headers
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
           update: true
-          install: >-
-            mingw-w64-x86_64-gcc
-            mingw-w64-x86_64-zlib
-
-      - name: Add MinGW to PATH
-        shell: cmd
-        run: echo C:\msys64\mingw64\bin>>%GITHUB_PATH%
+          install: mingw-w64-x86_64-zlib
 
       - name: Build and Pack lua-zlib
         shell: cmd
