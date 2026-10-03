@@ -1,0 +1,35 @@
+name: Build lua-zlib for Windows
+
+on:
+  workflow_dispatch: # Позволяет запускать сборку кнопкой вручную
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup MSYS2 and MinGW
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-lua
+            mingw-w64-x86_64-luarocks
+            mingw-w64-x86_64-zlib
+
+      - name: Build lua-zlib rock
+        shell: msys2 {0}
+        run: |
+          luarocks build lua-zlib ZLIB_DIR=/mingw64 --pack-binary-rock
+
+      - name: Upload compiled rock
+        uses: actions/upload-artifact@v4
+        with:
+          name: lua-zlib-windows-x64
+          path: "*.rock"
