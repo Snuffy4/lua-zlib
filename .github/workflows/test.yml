@@ -73,3 +73,10 @@ jobs:
       run: luarocks make lua-zlib-scm-0.rockspec
     - name: Run tests
       run: lua test.lua
+    - name: Pack binary rock
+      run: luarocks pack lua-zlib
+    - name: Upload binary rock to Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: lua-zlib-binary-${{ matrix.os }}-${{ matrix.luaVersion }}
+        path: "*.rock"
